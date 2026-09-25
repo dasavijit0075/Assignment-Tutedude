@@ -9,7 +9,7 @@ client = MongoClient(MONGO_URI)
 db = client["flask_db"]
 collection = db["users"]
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/api", methods=["GET", "POST"])
 def form():
     error = None
 
