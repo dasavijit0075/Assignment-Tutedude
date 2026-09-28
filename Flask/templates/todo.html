@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Manager</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --primary-accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --primary-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-border: rgba(255, 255, 255, 0.12);
+            --input-focus: #818cf8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 868px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2.2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 1.8rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.4rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1.1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background: var(--primary-accent);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .error-banner {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Task List Styling */
+        .task-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .badge-count {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .task-scroll {
+            max-height: 440px;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+        }
+
+        .task-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .task-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            padding: 1.1rem;
+            margin-bottom: 0.9rem;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            position: relative;
+        }
+
+        .task-item:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(15, 23, 42, 0.75);
+            transform: translateX(3px);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        .task-item.completed .task-name {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-name {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #f1f5f9;
+            margin-bottom: 0.3rem;
+        }
+
+        .task-desc {
+            font-size: 0.88rem;
+            color: #94a3b8;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action.toggle:hover {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .btn-action.delete:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+            color: #818cf8;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #818cf8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="card">
+            <div class="header">
+                <h1><i class="fa-solid fa-list-check" style="color: #a855f7;"></i> Add To-Do Item</h1>
+                <p>Create a new task with a name and detailed description.</p>
+            </div>
+
+            {% if error %}
+            <div class="error-banner">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form action="/todo" method="POST">
+                <div class="form-group">
+                    <label for="item_name"><i class="fa-solid fa-tag"></i> Item Name</label>
+                    <input type="text" id="item_name" name="item_name" class="form-control"
+                        placeholder="e.g. Build Flask REST API" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="item_description"><i class="fa-solid fa-align-left"></i> Item Description</label>
+                    <textarea id="item_description" name="item_description" class="form-control"
+                        placeholder="Provide details about what needs to be done..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-plus"></i> Add To-Do Task
+                </button>
+            </form>
+
+            <a href="/api" class="nav-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to User Form
+            </a>
+        </div>
+
+        <!-- Task Display Section -->
+        <div class="card">
+            <div class="task-list-header">
+                <h2 style="font-family: 'Outfit'; font-size: 1.3rem;"><i class="fa-solid fa-tasks"
+                        style="color: #6366f1;"></i> Your Tasks</h2>
+                <span class="badge-count">{{ todos|length }} Items</span>
+            </div>
+
+            <div class="task-scroll">
+                {% if todos %}
+                {% for todo in todos %}
+                <div class="task-item {% if todo.completed %}completed{% endif %}">
+                    <div class="task-content">
+                        <div class="task-name">{{ todo.item_name }}</div>
+                        <div class="task-desc">{{ todo.item_description }}</div>
+                    </div>
+
+                    <div class="task-actions">
+                        <form action="/todo/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action toggle" title="Toggle Complete">
+                                <i
+                                    class="fa-solid {% if todo.completed %}fa-circle-check{% else %}fa-circle{% endif %}"></i>
+                            </button>
+                        </form>
+                        <form action="/todo/delete/{{ loop.index0 }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action delete" title="Delete Task">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <p>No tasks added yet!</p>
+                    <span style="font-size:0.8rem; color: #64748b;">Fill out the form on the left to create your first
+                        task.</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

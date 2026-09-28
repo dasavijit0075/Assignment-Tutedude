@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>User Form</title>
 </head>
+
 <body>
     <h2>User Registration</h2>
 
     {% if error %}
-        <p style="color:red;">{{ error }}</p>
+    <p style="color:red;">{{ error }}</p>
     {% endif %}
 
     <form method="POST">
@@ -22,5 +24,8 @@
 
         <button type="submit">Submit</button>
     </form>
+    <br>
+    <a href="/todo">Go to To-Do Page</a>
 </body>
+
 </html>
