@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -76,6 +79,7 @@
                 opacity: 0;
                 transform: translateY(15px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -327,6 +331,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -347,8 +352,8 @@
             <form action="/submittodoitem" method="POST">
                 <div class="form-group">
                     <label for="itemId"><i class="fa-solid fa-hashtag"></i> Item ID</label>
-                    <input type="text" id="itemId" name="itemId" class="form-control"
-                        placeholder="e.g. TODO-101" required autocomplete="off">
+                    <input type="text" id="itemId" name="itemId" class="form-control" placeholder="e.g. TODO-101"
+                        required autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -388,58 +393,66 @@
         <!-- Task Display Section -->
         <div class="card">
             <div class="task-list-header">
-                <h2 style="font-family: 'Outfit'; font-size: 1.3rem;"><i class="fa-solid fa-tasks" style="color: #6366f1;"></i> Stored To-Do Items</h2>
+                <h2 style="font-family: 'Outfit'; font-size: 1.3rem;"><i class="fa-solid fa-tasks"
+                        style="color: #6366f1;"></i> Stored To-Do Items</h2>
                 <span class="badge-count">{{ todos|length }} Items</span>
             </div>
 
             <div class="task-scroll">
                 {% if todos %}
-                    {% for todo in todos %}
-                    <div class="task-item {% if todo.completed %}completed{% endif %}">
-                        <div class="task-content">
-                            <div class="task-name">
-                                {% if todo.itemId or todo.item_id %}
-                                <span style="font-size: 0.8rem; background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 0.15rem 0.5rem; border-radius: 6px; margin-right: 0.4rem; font-family: monospace;">#{{ todo.itemId or todo.item_id }}</span>
-                                {% endif %}
-                                {{ todo.itemName or todo.item_name }}
-                            </div>
-                            {% if todo.itemUuid or todo.item_uuid %}
-                            <div style="font-size: 0.78rem; color: #64748b; font-family: monospace; margin-bottom: 0.2rem;">
-                                UUID: {{ todo.itemUuid or todo.item_uuid }}
-                            </div>
-                            {% endif %}
-                            {% if todo.itemHash or todo.item_hash %}
-                            <div style="font-size: 0.75rem; color: #64748b; font-family: monospace; margin-bottom: 0.3rem; word-break: break-all;">
-                                Hash: {{ todo.itemHash or todo.item_hash }}
-                            </div>
-                            {% endif %}
-                            <div class="task-desc">{{ todo.itemDescription or todo.item_description }}</div>
-                        </div>
 
-                        <div class="task-actions">
-                            <form action="/todo/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
-                                <button type="submit" class="btn-action toggle" title="Toggle Complete">
-                                    <i class="fa-solid {% if todo.completed %}fa-circle-check{% else %}fa-circle{% endif %}"></i>
-                                </button>
-                            </form>
-                            <form action="/todo/delete/{{ loop.index0 }}" method="POST" style="display:inline;">
-                                <button type="submit" class="btn-action delete" title="Delete Task">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </form>
+                {% for todo in todos %}
+                <div class="task-item {% if todo.completed %}completed{% endif %}">
+                    <div class="task-content">
+                        <div class="task-name">
+                            {% if todo.itemId or todo.item_id %}
+                            <span
+                                style="font-size: 0.8rem; background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 0.15rem 0.5rem; border-radius: 6px; margin-right: 0.4rem; font-family: monospace;">#{{
+                                todo.itemId or todo.item_id }}</span>
+                            {% endif %}
+                            {{ todo.itemName or todo.item_name }}
                         </div>
+                        {% if todo.itemUuid or todo.item_uuid %}
+                        <div style="font-size: 0.78rem; color: #64748b; font-family: monospace; margin-bottom: 0.2rem;">
+                            UUID: {{ todo.itemUuid or todo.item_uuid }}
+                        </div>
+                        {% endif %}
+                        {% if todo.itemHash or todo.item_hash %}
+                        <div
+                            style="font-size: 0.75rem; color: #64748b; font-family: monospace; margin-bottom: 0.3rem; word-break: break-all;">
+                            Hash: {{ todo.itemHash or todo.item_hash }}
+                        </div>
+                        {% endif %}
+                        <div class="task-desc">{{ todo.itemDescription or todo.item_description }}</div>
                     </div>
-                    {% endfor %}
+
+                    <div class="task-actions">
+                        <form action="/todo/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action toggle" title="Toggle Complete">
+                                <i
+                                    class="fa-solid {% if todo.completed %}fa-circle-check{% else %}fa-circle{% endif %}"></i>
+                            </button>
+                        </form>
+                        <form action="/todo/delete/{{ loop.index0 }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action delete" title="Delete Task">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
                 {% else %}
-                    <div class="empty-state">
-                        <i class="fa-solid fa-clipboard-list"></i>
-                        <p>No To-Do items stored yet!</p>
-                        <span style="font-size:0.8rem; color: #64748b;">Fill out the form on the left to create your first task.</span>
-                    </div>
+                <div class="empty-state">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <p>No To-Do items stored yet!</p>
+                    <span style="font-size:0.8rem; color: #64748b;">Fill out the form on the left to create your first
+                        task.</span>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
 </body>
+
 </html>
