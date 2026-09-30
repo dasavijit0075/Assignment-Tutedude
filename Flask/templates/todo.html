@@ -95,7 +95,6 @@
             font-size: 1.8rem;
             font-weight: 700;
             background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
@@ -349,23 +348,24 @@
             </div>
             {% endif %}
 
-            <form action="/submittodoitem" method="POST">
+            <form action="/todo" method="POST">
                 <div class="form-group">
-                    <label for="itemId"><i class="fa-solid fa-hashtag"></i> Item ID</label>
-                    <input type="text" id="itemId" name="itemId" class="form-control" placeholder="e.g. TODO-101"
+                    <label for="item_id"><i class="fa-solid fa-hashtag"></i> Item ID</label>
+                    <input type="text" id="item_id" name="item_id" class="form-control" placeholder="e.g. TODO-101"
                         required autocomplete="off">
                 </div>
 
                 <div class="form-group">
-                    <label for="itemUuid"><i class="fa-solid fa-fingerprint"></i> Item UUID</label>
-                    <input type="text" id="itemUuid" name="itemUuid" class="form-control"
-                        placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000" autocomplete="off">
+                    <label for="item_uuid"><i class="fa-solid fa-fingerprint"></i> Item UUID</label>
+                    <input type="text" id="item_uuid" name="item_uuid" class="form-control"
+                        placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
-                    <label for="itemHash"><i class="fa-solid fa-lock"></i> Item Hash</label>
-                    <input type="text" id="itemHash" name="itemHash" class="form-control"
-                        placeholder="e.g. a591a6d40bf420404a..." autocomplete="off">
+                    <label for="item_hash"><i class="fa-solid fa-lock"></i> Item Hash</label>
+                    <input type="text" id="item_hash" name="item_hash" class="form-control"
+                        placeholder="e.g. a591a6d40bf420404a011733cfb7b190d62c65bf0bcda1908403c0777d265f60" required
+                        autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -416,14 +416,18 @@
                         <div style="font-size: 0.78rem; color: #64748b; font-family: monospace; margin-bottom: 0.2rem;">
                             UUID: {{ todo.itemUuid or todo.item_uuid }}
                         </div>
-                        {% endif %}
-                        {% if todo.itemHash or todo.item_hash %}
-                        <div
-                            style="font-size: 0.75rem; color: #64748b; font-family: monospace; margin-bottom: 0.3rem; word-break: break-all;">
-                            Hash: {{ todo.itemHash or todo.item_hash }}
+                        {% if todo.item_uuid or todo.itemUuid %}
+                        <div style="font-size: 0.78rem; color: #64748b; font-family: monospace; margin-bottom: 0.2rem;">
+                            UUID: {{ todo.item_uuid or todo.itemUuid }}
                         </div>
                         {% endif %}
-                        <div class="task-desc">{{ todo.itemDescription or todo.item_description }}</div>
+                        {% if todo.item_hash or todo.itemHash %}
+                        <div
+                            style="font-size: 0.75rem; color: #64748b; font-family: monospace; margin-bottom: 0.3rem; word-break: break-all;">
+                            Hash: {{ todo.item_hash or todo.itemHash }}
+                        </div>
+                        {% endif %}
+                        <div class="task-desc">{{ todo.item_description or todo.itemDescription }}</div>
                     </div>
 
                     <div class="task-actions">
