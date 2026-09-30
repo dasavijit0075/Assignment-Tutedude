@@ -351,6 +351,12 @@
 
             <form action="/todo" method="POST">
                 <div class="form-group">
+                    <label for="item_id"><i class="fa-solid fa-hashtag"></i> Item ID</label>
+                    <input type="text" id="item_id" name="item_id" class="form-control"
+                        placeholder="e.g. TODO-101" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
                     <label for="item_name"><i class="fa-solid fa-tag"></i> Item Name</label>
                     <input type="text" id="item_name" name="item_name" class="form-control"
                         placeholder="e.g. Build Flask REST API" required autocomplete="off">
@@ -385,8 +391,11 @@
                 {% for todo in todos %}
                 <div class="task-item {% if todo.completed %}completed{% endif %}">
                     <div class="task-content">
-                        <div class="task-name">{{ todo.item_name }}</div>
-                        <div class="task-desc">{{ todo.item_description }}</div>
+                        <div class="task-name">
+                            <span style="font-size: 0.8rem; background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 0.15rem 0.5rem; border-radius: 6px; margin-right: 0.4rem; font-family: monospace;">#{{ todo.item_id or todo.itemId }}</span>
+                            {{ todo.item_name or todo.itemName }}
+                        </div>
+                        <div class="task-desc">{{ todo.item_description or todo.itemDescription }}</div>
                     </div>
 
                     <div class="task-actions">

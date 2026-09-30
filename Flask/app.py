@@ -56,15 +56,20 @@ def success():
 def todo():
     error = None
     if request.method == "POST":
-        item_name = request.form.get("item_name")
-        item_description = request.form.get("item_description")
+        item_id = request.form.get("item_id") or request.form.get("itemId")
+        item_name = request.form.get("item_name") or request.form.get("itemName")
+        item_description = request.form.get("item_description") or request.form.get("itemDescription")
 
-        if not item_name or not item_description:
-            error = "Both Item Name and Item Description are required!"
+        if not item_id or not item_name or not item_description:
+            error = "Item ID, Item Name, and Item Description are required!"
         else:
             todo_item = {
+                "item_id": item_id,
+                "itemId": item_id,
                 "item_name": item_name,
+                "itemName": item_name,
                 "item_description": item_description,
+                "itemDescription": item_description,
                 "completed": False
             }
             try:
@@ -88,6 +93,54 @@ def todo():
     return render_template("todo.html", todos=todos, error=error)
 
 
+@app.route("/submittodoitem", methods=["POST"])
+def submit_todo_item():
+    try:
+        if request.is_json:
+            data = request.get_json()
+            item_id = data.get("itemId") or data.get("item_id")
+            item_name = data.get("itemName") or data.get("item_name")
+            item_description = data.get("itemDescription") or data.get("item_description")
+        else:
+            item_id = request.form.get("itemId") or request.form.get("item_id")
+            item_name = request.form.get("itemName") or request.form.get("item_name")
+            item_description = request.form.get("itemDescription") or request.form.get("item_description")
+
+        if not item_id or not item_name or not item_description:
+            return jsonify({"error": "itemId, itemName, and itemDescription are required"}), 400
+
+        todo_item = {
+            "itemId": item_id,
+            "item_id": item_id,
+            "itemName": item_name,
+            "item_name": item_name,
+            "itemDescription": item_description,
+            "item_description": item_description,
+            "completed": False
+        }
+
+        try:
+            if todos_collection is not None:
+                todos_collection.insert_one(todo_item)
+        except Exception:
+            pass
+
+        in_memory_todos.append(todo_item)
+
+        if request.is_json:
+            return jsonify({
+                "message": "To-Do item added successfully!",
+                "itemId": item_id,
+                "itemName": item_name,
+                "itemDescription": item_description
+            }), 201
+        else:
+            return redirect(url_for("todo"))
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/todo/toggle/<int:index>", methods=["POST"])
 def toggle_todo(index):
     try:
@@ -96,7 +149,7 @@ def toggle_todo(index):
             if todos_collection is not None:
                 item = in_memory_todos[index]
                 todos_collection.update_one(
-                    {"item_name": item["item_name"]},
+                    {"item_id": item.get("item_id")},
                     {"$set": {"completed": item["completed"]}}
                 )
     except Exception:
@@ -110,7 +163,7 @@ def delete_todo(index):
         if 0 <= index < len(in_memory_todos):
             item = in_memory_todos.pop(index)
             if todos_collection is not None:
-                todos_collection.delete_one({"item_name": item["item_name"]})
+                todos_collection.delete_one({"item_id": item.get("item_id")})
     except Exception:
         pass
     return redirect(url_for("todo"))
