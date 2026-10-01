@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -79,7 +76,6 @@
                 opacity: 0;
                 transform: translateY(15px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -100,6 +96,7 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
+            margin-bottom: 0.4rem;
         }
 
         .header p {
@@ -188,7 +185,6 @@
             gap: 0.5rem;
         }
 
-        /* Task List Styling */
         .task-list-header {
             display: flex;
             justify-content: space-between;
@@ -331,7 +327,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <div class="container">
@@ -339,7 +334,7 @@
         <div class="card">
             <div class="header">
                 <h1><i class="fa-solid fa-list-check" style="color: #a855f7;"></i> Add To-Do Item</h1>
-                <p>Create a new task with a name and detailed description.</p>
+                <p>Submit item details to backend route <code>/submittodoitem</code></p>
             </div>
 
             {% if error %}
@@ -349,27 +344,39 @@
             </div>
             {% endif %}
 
-            <form action="/todo" method="POST">
+            <form action="/submittodoitem" method="POST">
                 <div class="form-group">
-                    <label for="item_id"><i class="fa-solid fa-hashtag"></i> Item ID</label>
-                    <input type="text" id="item_id" name="item_id" class="form-control"
+                    <label for="itemId"><i class="fa-solid fa-hashtag"></i> Item ID</label>
+                    <input type="text" id="itemId" name="itemId" class="form-control"
                         placeholder="e.g. TODO-101" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
-                    <label for="item_name"><i class="fa-solid fa-tag"></i> Item Name</label>
-                    <input type="text" id="item_name" name="item_name" class="form-control"
+                    <label for="itemUuid"><i class="fa-solid fa-fingerprint"></i> Item UUID</label>
+                    <input type="text" id="itemUuid" name="itemUuid" class="form-control"
+                        placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemHash"><i class="fa-solid fa-lock"></i> Item Hash</label>
+                    <input type="text" id="itemHash" name="itemHash" class="form-control"
+                        placeholder="e.g. a591a6d40bf420404a..." autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemName"><i class="fa-solid fa-tag"></i> Item Name</label>
+                    <input type="text" id="itemName" name="itemName" class="form-control"
                         placeholder="e.g. Build Flask REST API" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
-                    <label for="item_description"><i class="fa-solid fa-align-left"></i> Item Description</label>
-                    <textarea id="item_description" name="item_description" class="form-control"
+                    <label for="itemDescription"><i class="fa-solid fa-align-left"></i> Item Description</label>
+                    <textarea id="itemDescription" name="itemDescription" class="form-control"
                         placeholder="Provide details about what needs to be done..." required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">
-                    <i class="fa-solid fa-plus"></i> Add To-Do Task
+                    <i class="fa-solid fa-plus"></i> Submit To-Do Item
                 </button>
             </form>
 
@@ -381,50 +388,58 @@
         <!-- Task Display Section -->
         <div class="card">
             <div class="task-list-header">
-                <h2 style="font-family: 'Outfit'; font-size: 1.3rem;"><i class="fa-solid fa-tasks"
-                        style="color: #6366f1;"></i> Your Tasks</h2>
+                <h2 style="font-family: 'Outfit'; font-size: 1.3rem;"><i class="fa-solid fa-tasks" style="color: #6366f1;"></i> Stored To-Do Items</h2>
                 <span class="badge-count">{{ todos|length }} Items</span>
             </div>
 
             <div class="task-scroll">
                 {% if todos %}
-                {% for todo in todos %}
-                <div class="task-item {% if todo.completed %}completed{% endif %}">
-                    <div class="task-content">
-                        <div class="task-name">
-                            <span style="font-size: 0.8rem; background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 0.15rem 0.5rem; border-radius: 6px; margin-right: 0.4rem; font-family: monospace;">#{{ todo.item_id or todo.itemId }}</span>
-                            {{ todo.item_name or todo.itemName }}
+                    {% for todo in todos %}
+                    <div class="task-item {% if todo.completed %}completed{% endif %}">
+                        <div class="task-content">
+                            <div class="task-name">
+                                {% if todo.itemId or todo.item_id %}
+                                <span style="font-size: 0.8rem; background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 0.15rem 0.5rem; border-radius: 6px; margin-right: 0.4rem; font-family: monospace;">#{{ todo.itemId or todo.item_id }}</span>
+                                {% endif %}
+                                {{ todo.itemName or todo.item_name }}
+                            </div>
+                            {% if todo.itemUuid or todo.item_uuid %}
+                            <div style="font-size: 0.78rem; color: #64748b; font-family: monospace; margin-bottom: 0.2rem;">
+                                UUID: {{ todo.itemUuid or todo.item_uuid }}
+                            </div>
+                            {% endif %}
+                            {% if todo.itemHash or todo.item_hash %}
+                            <div style="font-size: 0.75rem; color: #64748b; font-family: monospace; margin-bottom: 0.3rem; word-break: break-all;">
+                                Hash: {{ todo.itemHash or todo.item_hash }}
+                            </div>
+                            {% endif %}
+                            <div class="task-desc">{{ todo.itemDescription or todo.item_description }}</div>
                         </div>
-                        <div class="task-desc">{{ todo.item_description or todo.itemDescription }}</div>
-                    </div>
 
-                    <div class="task-actions">
-                        <form action="/todo/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn-action toggle" title="Toggle Complete">
-                                <i
-                                    class="fa-solid {% if todo.completed %}fa-circle-check{% else %}fa-circle{% endif %}"></i>
-                            </button>
-                        </form>
-                        <form action="/todo/delete/{{ loop.index0 }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn-action delete" title="Delete Task">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </form>
+                        <div class="task-actions">
+                            <form action="/todo/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-action toggle" title="Toggle Complete">
+                                    <i class="fa-solid {% if todo.completed %}fa-circle-check{% else %}fa-circle{% endif %}"></i>
+                                </button>
+                            </form>
+                            <form action="/todo/delete/{{ loop.index0 }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-action delete" title="Delete Task">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
                 {% else %}
-                <div class="empty-state">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                    <p>No tasks added yet!</p>
-                    <span style="font-size:0.8rem; color: #64748b;">Fill out the form on the left to create your first
-                        task.</span>
-                </div>
+                    <div class="empty-state">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <p>No To-Do items stored yet!</p>
+                        <span style="font-size:0.8rem; color: #64748b;">Fill out the form on the left to create your first task.</span>
+                    </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
 </body>
-
 </html>
